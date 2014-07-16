@@ -55,6 +55,8 @@ function count() {
 #find all PNGs in folder and crush there
 function crushdir() {
   echo "tinypng: Crush directory"
+  mkdir -p .tinypngtmp/$TARGET
+
   #Counter Vars
   totalstart=0
   totalend=0
@@ -109,9 +111,9 @@ function crushfile() {
 
 function crunshPNG() {
   EXTLESS=`echo $1 | sed -e 's/\.png$//'`
-  convert $1 -background Black -alpha Background $1
-  pngnq -n 256 -e '-pngnq.png' -d .tinypngtmp $1
-  pngcrush -rem gAMA -rem cHRM -rem iCCP -rem sRGB -brute -l 9 -max -reduce -m 0 -q .tinypngtmp/$EXTLESS-pngnq.png .tinypngtmp/$EXTLESS-pngcrush.png
+  convert $1 -background Black -alpha Background .tinypngtmp/$1
+  pngquant --ext '-pngquant.png' 256 .tinypngtmp/$1
+  pngcrush -rem gAMA -rem cHRM -rem iCCP -rem sRGB -brute -l 9 -max 8192 -reduce -m 1 -q .tinypngtmp/$EXTLESS-pngquant.png .tinypngtmp/$EXTLESS-pngcrush.png
   optipng -o7 -q -out .tinypngtmp/$EXTLESS-optipng.png .tinypngtmp/$EXTLESS-pngcrush.png
   pngout -q -y -k0 -s0 .tinypngtmp/$EXTLESS-optipng.png .tinypngtmp/$EXTLESS-pngout.png
   advpng -z -4 .tinypngtmp/$EXTLESS-pngout.png > /dev/null

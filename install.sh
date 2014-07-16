@@ -41,9 +41,9 @@ function installTinyPng ()
 function installUtils ()
 {
   echo "Installing utilities..."
-  $USE_SUDO$PKG_MANAGER update 2>&1 > /dev/null
-  $USE_SUDO$PKG_MANAGER install pngnq pngcrush advancecomp optipng imagemagick 2>&1 > /dev/null
-  echo "Installed pngnq, pngcrush, advancecomp, optipng and imagemagick"
+  $USE_SUDO$PKG_MANAGER selfupdate 2>&1 > /dev/null
+  $USE_SUDO$PKG_MANAGER install pngquant pngcrush advancecomp optipng imagemagick 2>&1 > /dev/null
+  echo "Installed pngquant, pngcrush, advancecomp, optipng and imagemagick"
 }
 
 function detectArchitecture ()

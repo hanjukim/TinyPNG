@@ -12,24 +12,28 @@ if [ "$(id -u)" == "0" ]; then
   exit 1
 fi
 
-echo "\
-This script will now ask for your sudo password, \
-this is needed for some filesystem operations"
-
-# Always ask for password
-sudo -k
-sudo -v || exit 1
-
 # Determine package manager and if its needed to use sudp
 if PKG_MANAGER=$(command -v apt-get) > /dev/null 2>&1; then
   USE_SUDO='sudo '
 elif PKG_MANAGER=$(command -v brew) > /dev/null 2>&1; then
   USE_SUDO=''
+  $USE_SUDO$PKG_MANAGER update 2>&1 > /dev/null
 elif PKG_MANAGER=$(command -v port) > /dev/null 2>&1; then
   USE_SUDO='sudo '
+  $USE_SUDO$PKG_MANAGER selfupdate 2>&1 > /dev/null
 fi
 
-PNGOUT_VERSION='20120530'
+if [ $USE_SUDO != "" ]; then
+  echo "\
+This script will now ask for your sudo password, \
+this is needed for some filesystem operations"
+
+  # Always ask for password
+  sudo -k
+  sudo -v || exit 1
+fi
+
+PNGOUT_VERSION='20150319'
 
 function installTinyPng ()
 {
@@ -41,7 +45,6 @@ function installTinyPng ()
 function installUtils ()
 {
   echo "Installing utilities..."
-  $USE_SUDO$PKG_MANAGER selfupdate 2>&1 > /dev/null
   $USE_SUDO$PKG_MANAGER install pngquant pngcrush advancecomp optipng imagemagick 2>&1 > /dev/null
   echo "Installed pngquant, pngcrush, advancecomp, optipng and imagemagick"
 }
